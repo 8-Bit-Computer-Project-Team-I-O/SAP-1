@@ -1,5 +1,6 @@
 package sap;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class Clock {
 		this.isHalted = newVal;
 	}
 
-	public void toggleClock() {
+	public void toggleClock() throws IOException {
 		// Validate that a clock exists
 		getClock();
 
@@ -101,7 +102,7 @@ public class Clock {
 		this.observers.remove(o);
 	}
 
-	public void notifyObservers() {
+	public void notifyObservers() throws IOException {
 		for (ClockObserver o : observers) {
 			o.clockChange();
 		}

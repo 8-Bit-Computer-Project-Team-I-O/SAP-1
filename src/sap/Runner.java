@@ -1,6 +1,7 @@
 package sap;
 
 import java.awt.Dimension;
+import java.io.IOException;
 import javax.swing.JFrame;
 
 import visuals.View;
@@ -8,7 +9,7 @@ import visuals.View;
 public class Runner {
 	public static JFrame main_frame;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		View view = new View();
 
 		// Create a frame and add the view to it 

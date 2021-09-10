@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.Hashtable;
 
 import javax.swing.*;
@@ -39,7 +40,7 @@ public class View extends JPanel
 	// Constants
 	public static final Color VIEW_BACKGROUND_COLOR = new Color(225, 246, 203);
 
-	public View() {
+	public View() throws IOException {
 		this.model = new SAPModel();
 		this.setBackground(VIEW_BACKGROUND_COLOR);
 
@@ -168,7 +169,11 @@ public class View extends JPanel
 	// Handle button clicks
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("resetButtonClicked")) {
-			this.model.reset();
+			try {
+				this.model.reset();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
 		} else if (e.getActionCommand().contentEquals("clockButton")) {
 			// If the program is auto-running, stop that first
 			if (isAutoRunning) {
@@ -177,7 +182,11 @@ public class View extends JPanel
 				bRunner = null;
 			}
 
-			sap.Clock.getClock().toggleClock();
+			try {
+				sap.Clock.getClock().toggleClock();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
 		} else if (e.getActionCommand().contentEquals("autoplay")) {
 			if (isAutoRunning) {
 				isAutoRunning = false;

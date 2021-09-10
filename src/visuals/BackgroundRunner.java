@@ -2,6 +2,8 @@ package visuals;
 
 import sap.Clock;
 
+import java.io.IOException;
+
 public class BackgroundRunner extends Thread {
 
 	// Instance Variables 
@@ -40,7 +42,11 @@ public class BackgroundRunner extends Thread {
 				e.printStackTrace();
 			}
 			// Make a move, then repeat the loop 
-			Clock.getClock().toggleClock();
+			try {
+				Clock.getClock().toggleClock();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

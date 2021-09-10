@@ -1,7 +1,12 @@
 package sap;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.Arrays;
 import java.util.List;
-
 import interfaces.ClockObserver;
 import interfaces.Register;
 import interfaces.SAPObserver;
@@ -26,6 +31,9 @@ public class SAPModel implements ClockObserver {
 	public static final int CO = 13;
 	public static final int J = 14;
 	public static final int FI = 15;
+	public static final Integer[] cntrlWords=new Integer[16];
+
+
 
 	// Enumerates the valid register types in SAP-1
 	public enum RegisterType {
@@ -54,8 +62,11 @@ public class SAPModel implements ClockObserver {
 	// Since SAP is observable, it must maintain a list of its observers (which is
 	// just the View in this implementation)
 	private List<SAPObserver> observers;
+	Socket sendingSocket;
+	OutputStreamWriter outputStream;
+	PrintWriter out;
 
-	public SAPModel() {
+	public SAPModel() throws IOException {
 		this.regA = new Register8Bit();
 		this.regB = new Register8Bit();
 		this.regOut = new Register8Bit();
@@ -69,6 +80,10 @@ public class SAPModel implements ClockObserver {
 		this.controlLines = new boolean[16];
 		this.observers = new ArrayList<SAPObserver>();
 		this.bus = new Register8Bit();
+		sendingSocket = new Socket();
+		sendingSocket.connect(new InetSocketAddress("127.0.0.1", 9999));
+		outputStream = new OutputStreamWriter(sendingSocket.getOutputStream());
+		out = new PrintWriter(outputStream, true);
 
 		// Register the model as a clock observer
 		Clock.getClock().addObserver(this);
@@ -76,7 +91,7 @@ public class SAPModel implements ClockObserver {
 		this.clockChange();
 	}
 
-	public void reset() {
+	public void reset() throws IOException {
 		// Inform the log
 		this.log.addEntry("User has requested to reset SAP...");
 
@@ -233,7 +248,7 @@ public class SAPModel implements ClockObserver {
 	}
 
 	@Override
-	public void clockChange() {
+	public void clockChange() throws IOException {
 		// If clock just fell, increment step count
 		if (!Clock.getClock().getStatus()) {
 			if (this.stepCount == 5) {
@@ -242,8 +257,6 @@ public class SAPModel implements ClockObserver {
 				this.stepCount++;
 			}
 			this.notifyStepCounterChange();
-			EventLog.getEventLog().addEntry("Step counter updated to " + this.stepCount);
-
 			if (this.stepCount == 1) {
 
 				// If we are on cycle 1, set lines manually
@@ -534,44 +547,137 @@ public class SAPModel implements ClockObserver {
 			if (this.controlLines[CO]) {
 				this.bus.loadVal(this.programCounter.getVal());
 				EventLog.getEventLog().addEntry("Program Counter value put onto bus (4 Bits)");
+				cntrlWords[CO]=1;
 				this.notifyBusChange();
+			}else{
+				cntrlWords[CO]=0;
 			}
 			if (this.controlLines[RO]) {
 				this.bus.loadVal((byte) this.RAM.memoryOut());
 				EventLog.getEventLog().addEntry("RAM value put onto bus");
+				cntrlWords[RO]=1;
 				this.notifyBusChange();
+			}else{
+				cntrlWords[RO]=0;
 			}
 			if (this.controlLines[IO]) {
 				// Put 4 least significant bits of Instruction Register onto the bus
 				this.bus.loadVal((byte) (0b00001111 & this.regIR.getVal()));
+				cntrlWords[IO]=1;
 				this.notifyBusChange();
 				EventLog.getEventLog().addEntry("Instruction Register value put onto bus (4 Bits)");
+			}else{
+				cntrlWords[IO]=0;
 			}
 			if (this.controlLines[AO]) {
 				this.bus.loadVal(this.regA.getVal());
+				cntrlWords[AO]=1;
 				this.notifyBusChange();
 				EventLog.getEventLog().addEntry("A register value put onto bus");
+			}else{
+				cntrlWords[AO]=0;
 			}
 			if (this.controlLines[SU]) {
+				cntrlWords[SU]=1;
 				this.notifyAChange();
+			}else{
+				cntrlWords[SU]=0;
 			}
 			if (this.controlLines[SO]) {
 				this.bus.loadVal(this.adder.ALUOut(this.controlLines[SU]));
+				cntrlWords[SO]=1;
 				this.notifyBusChange();
 				EventLog.getEventLog().addEntry("ALU sum value put onto bus");
+			}else{
+				cntrlWords[SO]=0;
 			}
+
+			if (this.controlLines[FI]) {
+				cntrlWords[FI]=1;
+
+			}else{
+				cntrlWords[FI]=0;
+			}
+			if (this.controlLines[MI]) {
+				cntrlWords[MI]=1;
+			}else{
+				cntrlWords[MI]=0;
+			}
+			if (this.controlLines[CE]) {
+				cntrlWords[CE]=1;
+			}else{
+				cntrlWords[CE]=0;
+			}
+			if (this.controlLines[HLT]) {
+				cntrlWords[HLT]=1;
+			}else{
+				cntrlWords[HLT]=0;
+			}
+			if (this.controlLines[RI]) {
+				cntrlWords[RI]=1;
+			}else{
+				cntrlWords[RI]=0;
+			}
+
+			if (this.controlLines[II]) {
+				cntrlWords[II]=1;
+			}else{
+				cntrlWords[II]=0;
+			}
+			if (this.controlLines[AI]) {
+				cntrlWords[AI]=1;
+			}else{
+				cntrlWords[AI]=0;
+			}
+			if (this.controlLines[BI]) {
+				cntrlWords[BI]=1;
+			}else{
+				cntrlWords[BI]=0;
+			}
+			if (this.controlLines[OI]) {
+				cntrlWords[OI]=1;
+			}else{
+				cntrlWords[OI]=0;
+			}
+			if (this.controlLines[J]) {
+				cntrlWords[J]=1;
+			}else{
+				cntrlWords[J]=0;
+			}
+
+			StringBuilder eightBit= new StringBuilder(Integer.toBinaryString(bus.getVal()));
+			if(eightBit.length()<8){
+				while(eightBit.length()<8){
+					eightBit.insert(0, "0");
+				}
+			}else if(eightBit.length()>8){
+				eightBit = new StringBuilder(eightBit.substring(eightBit.length() - 8));
+			}
+			System.out.println(eightBit);
+			System.out.println(Arrays.toString(cntrlWords));
+			if(sendingSocket.isConnected()) {
+				outputStream.write(eightBit + " " + Arrays.toString(cntrlWords));
+				outputStream.flush();
+			}else{
+				sendingSocket.close();
+			}
+			EventLog.getEventLog().addEntry("Step counter updated to " + this.stepCount);
 
 			return;
 
 		} else {
 			// Meaning we are on the rising edge of the clock, handle all signals dependent
 			// on a rising clock edge
+
+
+
 			if (this.controlLines[FI]) {
 				this.adder.flagsIn(this.controlLines[SU]);
 				this.notifyFlagRegisterChange();
 				EventLog.getEventLog().addEntry("Flags register updated");
 
 			}
+
 			if (this.controlLines[MI]) {
 				this.regMAR.loadVal(this.bus.getVal());
 				this.notifyMARChange();
