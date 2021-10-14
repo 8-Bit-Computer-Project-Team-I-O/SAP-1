@@ -159,30 +159,30 @@ public class SAPModel implements ClockObserver {
 	// Helper method that parses a byte and finds its instruction type
 	private InstructionTypes decodeInstructionHelper(byte instructionVal) {
 		switch (instructionVal) {
-		case 0b00000000:
-			return InstructionTypes.NOP;
-		case 0b00010000:
-			return InstructionTypes.LDA;
-		case 0b00100000:
-			return InstructionTypes.ADD;
-		case 0b00110000:
-			return InstructionTypes.SUB;
-		case 0b01000000:
-			return InstructionTypes.STA;
-		case 0b01010000:
-			return InstructionTypes.LDI;
-		case 0b01100000:
-			return InstructionTypes.JMP;
-		case 0b01110000:
-			return InstructionTypes.JC;
-		case (byte) 0b10000000:
-			return InstructionTypes.JZ;
-		case (byte) 0b11100000:
-			return InstructionTypes.OUT;
-		case (byte) 0b11110000:
-			return InstructionTypes.HLT;
-		default:
-			return InstructionTypes.INVALID;
+			case 0b00000000:
+				return InstructionTypes.NOP;
+			case 0b00010000:
+				return InstructionTypes.LDA;
+			case 0b00100000:
+				return InstructionTypes.ADD;
+			case 0b00110000:
+				return InstructionTypes.SUB;
+			case 0b01000000:
+				return InstructionTypes.STA;
+			case 0b01010000:
+				return InstructionTypes.LDI;
+			case 0b01100000:
+				return InstructionTypes.JMP;
+			case 0b01110000:
+				return InstructionTypes.JC;
+			case (byte) 0b10000000:
+				return InstructionTypes.JZ;
+			case (byte) 0b11100000:
+				return InstructionTypes.OUT;
+			case (byte) 0b11110000:
+				return InstructionTypes.HLT;
+			default:
+				return InstructionTypes.INVALID;
 		}
 	}
 
@@ -196,41 +196,41 @@ public class SAPModel implements ClockObserver {
 
 		// Handle result of decoded instruction
 		switch (t) {
-		case NOP:
-			logVal += "NOP";
-			break;
-		case LDA:
-			logVal += "LDA";
-			break;
-		case ADD:
-			logVal += "ADD";
-			break;
-		case SUB:
-			logVal += "SUB";
-			break;
-		case STA:
-			logVal += "STA";
-			break;
-		case LDI:
-			logVal += "LDI";
-			break;
-		case JMP:
-			logVal += "JMP";
-			break;
-		case JC:
-			logVal += "JC";
-			break;
-		case JZ:
-			logVal += "JZ";
-			break;
-		case OUT:
-			logVal += "OUT";
-			break;
-		case HLT:
-			logVal += "HLT";
-			break;
-		default:
-			logVal += "N/A";
+			case NOP:
+				logVal += "NOP";
+				break;
+			case LDA:
+				logVal += "LDA";
+				break;
+			case ADD:
+				logVal += "ADD";
+				break;
+			case SUB:
+				logVal += "SUB";
+				break;
+			case STA:
+				logVal += "STA";
+				break;
+			case LDI:
+				logVal += "LDI";
+				break;
+			case JMP:
+				logVal += "JMP";
+				break;
+			case JC:
+				logVal += "JC";
+				break;
+			case JZ:
+				logVal += "JZ";
+				break;
+			case OUT:
+				logVal += "OUT";
+				break;
+			case HLT:
+				logVal += "HLT";
+				break;
+			default:
+				logVal += "N/A";
 		}
 
 		// Then, add the argument to logVal
@@ -656,7 +656,11 @@ public class SAPModel implements ClockObserver {
 			System.out.println(eightBit);
 			System.out.println(Arrays.toString(cntrlWords));
 			if(sendingSocket.isConnected()) {
-				outputStream.write(eightBit + " " + Arrays.toString(cntrlWords));
+				String allValues="0"+"#"+eightBit+"#";
+				for(Integer bit:cntrlWords){
+					allValues=allValues.concat(String.valueOf(bit));
+				}
+				outputStream.write(allValues);
 				outputStream.flush();
 			}else{
 				sendingSocket.close();
@@ -668,6 +672,26 @@ public class SAPModel implements ClockObserver {
 		} else {
 			// Meaning we are on the rising edge of the clock, handle all signals dependent
 			// on a rising clock edge
+			StringBuilder eightBit= new StringBuilder(Integer.toBinaryString(bus.getVal()));
+			if(eightBit.length()<8){
+				while(eightBit.length()<8){
+					eightBit.insert(0, "0");
+				}
+			}else if(eightBit.length()>8){
+				eightBit = new StringBuilder(eightBit.substring(eightBit.length() - 8));
+			}
+			System.out.println(eightBit);
+			System.out.println(Arrays.toString(cntrlWords));
+			if(sendingSocket.isConnected()) {
+				String allValues="1"+"#"+eightBit+"#";
+				for(Integer bit:cntrlWords){
+					allValues=allValues.concat(String.valueOf(bit));
+				}
+				outputStream.write(allValues);
+				outputStream.flush();
+			}else{
+				sendingSocket.close();
+			}
 
 
 
