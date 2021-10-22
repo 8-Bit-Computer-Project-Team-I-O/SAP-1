@@ -19,7 +19,7 @@ public class BackgroundRunner extends Thread {
 		if (pauseDuration < 10 || pauseDuration > 1000) {
 			pauseDuration = 500;
 		} else {
-			this.pauseDuration = pauseDuration;
+			this.pauseDuration = 1000;
 		}
 	}
 
