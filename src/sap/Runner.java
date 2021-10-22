@@ -21,7 +21,6 @@ public class Runner {
 		// Lock in dimensions 
 		main_frame.setPreferredSize(new Dimension(250+2318/3, 50+1600/3));
 		main_frame.setResizable(false);
-
 		// Make the frame visible 
 		main_frame.pack();
 		main_frame.setVisible(true);

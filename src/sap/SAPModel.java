@@ -12,6 +12,9 @@ import interfaces.Register;
 import interfaces.SAPObserver;
 
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SAPModel implements ClockObserver {
 	// Assign constant integer values to each control line signal
@@ -32,6 +35,7 @@ public class SAPModel implements ClockObserver {
 	public static final int J = 14;
 	public static final int FI = 15;
 	public static final Integer[] cntrlWords=new Integer[16];
+
 
 
 
