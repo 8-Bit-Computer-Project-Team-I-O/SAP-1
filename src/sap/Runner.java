@@ -24,6 +24,7 @@ public class Runner {
 		// Make the frame visible 
 		main_frame.pack();
 		main_frame.setVisible(true);
+
 		
 	}
 }

@@ -133,6 +133,8 @@ public class SAPModel implements ClockObserver {
 		}
 	}
 
+
+
 	private void resetAllControlLines() {
 		// Set all control lines to false
 		for (int i = 0; i < 16; i++) {
@@ -664,8 +666,12 @@ public class SAPModel implements ClockObserver {
 				for(Integer bit:cntrlWords){
 					allValues=allValues.concat(String.valueOf(bit));
 				}
-				outputStream.write(allValues);
-				outputStream.flush();
+				try {
+					outputStream.write(allValues);
+					outputStream.flush();
+				}catch (Exception e){
+					System.out.println("Not connected");
+				}
 			}else{
 				sendingSocket.close();
 			}
@@ -688,11 +694,19 @@ public class SAPModel implements ClockObserver {
 			System.out.println(Arrays.toString(cntrlWords));
 			if(sendingSocket.isConnected()) {
 				String allValues="1"+"#"+eightBit+"#";
+				int i=0;
 				for(Integer bit:cntrlWords){
-					allValues=allValues.concat(String.valueOf(bit));
+					if(i<16) {
+						allValues = allValues.concat(String.valueOf(bit));
+						i++;
+					}
 				}
-				outputStream.write(allValues);
-				outputStream.flush();
+				try {
+					outputStream.write(allValues);
+					outputStream.flush();
+				}catch (Exception e){
+					System.out.println("Disconnected from UI");
+				}
 			}else{
 				sendingSocket.close();
 			}

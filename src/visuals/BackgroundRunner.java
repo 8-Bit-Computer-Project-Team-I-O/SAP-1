@@ -1,6 +1,8 @@
 package visuals;
 
 import sap.Clock;
+import sap.SAPModel;
+
 
 import java.io.IOException;
 
@@ -19,7 +21,7 @@ public class BackgroundRunner extends Thread {
 		if (pauseDuration < 10 || pauseDuration > 1000) {
 			pauseDuration = 500;
 		} else {
-			this.pauseDuration = 1000;
+			this.pauseDuration = pauseDuration;
 		}
 	}
 
@@ -43,6 +45,7 @@ public class BackgroundRunner extends Thread {
 			}
 			// Make a move, then repeat the loop 
 			try {
+
 				Clock.getClock().toggleClock();
 			} catch (IOException e) {
 				e.printStackTrace();
