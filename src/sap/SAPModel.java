@@ -85,7 +85,12 @@ public class SAPModel implements ClockObserver {
 		this.observers = new ArrayList<SAPObserver>();
 		this.bus = new Register8Bit();
 		sendingSocket = new Socket();
-		sendingSocket.connect(new InetSocketAddress("127.0.0.1", 9999));
+		try {
+			sendingSocket.connect(new InetSocketAddress("127.0.0.1", 9999));
+		}catch (Exception e){
+			System.out.println("Error: Run the interpretation program first");
+			System.exit(0);
+		}
 		outputStream = new OutputStreamWriter(sendingSocket.getOutputStream());
 		out = new PrintWriter(outputStream, true);
 
