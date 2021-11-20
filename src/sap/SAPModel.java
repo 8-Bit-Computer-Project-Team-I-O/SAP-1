@@ -11,6 +11,7 @@ import interfaces.ClockObserver;
 import interfaces.Register;
 import interfaces.SAPObserver;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -88,7 +89,7 @@ public class SAPModel implements ClockObserver {
 		try {
 			sendingSocket.connect(new InetSocketAddress("127.0.0.1", 9999));
 		}catch (Exception e){
-			System.out.println("Error: Run the interpretation program first");
+			JOptionPane.showConfirmDialog(Runner.main_frame, "Error: Run the interpretation program first", "Startup Error", JOptionPane.DEFAULT_OPTION,JOptionPane.PLAIN_MESSAGE);
 			System.exit(0);
 		}
 		outputStream = new OutputStreamWriter(sendingSocket.getOutputStream());
