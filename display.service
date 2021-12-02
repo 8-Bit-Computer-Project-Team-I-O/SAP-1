@@ -1,0 +1,13 @@
+[Unit]
+#Launch the display and emulator for the Pi 0
+Description= Computer Interpreter Display
+
+[Service]
+User=root
+Type=simple
+ExecStart=/home/pi/computer-translator-display/run.sh >> /home/pi/sysup/display.log 2>&1
+StandardInput=tty-force
+Restart=always
+
+[Install]
+WantedBy=default.target

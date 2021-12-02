@@ -23,10 +23,22 @@ public class Memory {
 		this.observers = new ArrayList<RAMObserver>();
 
 		// Load garbage values into memory
-		for (int i = 0; i < 16; i++) {
-			this.data[i] = (byte) ThreadLocalRandom.current().nextInt(0, 254);
-		}
-
+		this.data[0] = (byte) 224;
+		this.data[1] = (byte) 47;
+		this.data[2] = (byte) 116;
+		this.data[3] = (byte) 96;
+		this.data[4] = (byte) 224;
+		this.data[5] = (byte) 62;
+		this.data[6] = (byte) 128;
+		this.data[7] = (byte) 100;
+		this.data[8] = (byte) 0;
+		this.data[9] = (byte) 0;
+		this.data[10] = (byte) 0;
+		this.data[11] = (byte) 0;
+		this.data[12] = (byte) 0;
+		this.data[13] = (byte) 0;
+		this.data[14] = (byte) 2;
+		this.data[15] = (byte) 1;
 	}
 
 	// loads val into the memory address held in the Memory Address Register

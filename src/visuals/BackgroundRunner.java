@@ -18,14 +18,8 @@ public class BackgroundRunner extends Thread {
 		this.isDone = false;
 
 		// Validate Input
-		/*
-		if (pauseDuration < 10 || pauseDuration > 1000) {
-			pauseDuration = 500;
-		} else {
-			this.pauseDuration = pauseDuration;
-		}
-		 */
-		this.pauseDuration = 5000;
+
+		this.pauseDuration = pauseDuration;
 	}
 
 	// Ends termination of the thread 

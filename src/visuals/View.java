@@ -30,12 +30,12 @@ public class View extends JPanel
 	private JButton playButton;
 	private SAPViewWidget viewWidget;
 	private RAMViewWidget ramWidget;
-	private JSlider speedSlider;
+    public JSlider speedSlider;
 	private SevenSegDisplay disp;
 
 	// Needed for the auto-runner
 	private boolean isAutoRunning;
-	private BackgroundRunner bRunner;
+	public BackgroundRunner bRunner;
 
 	// Constants
 	public static final Color VIEW_BACKGROUND_COLOR = new Color(225, 246, 203);
@@ -111,7 +111,7 @@ public class View extends JPanel
 		// Add speed slider
 		c.gridx = 3;
 		c.gridy = 5;
-		this.speedSlider = new JSlider(JSlider.HORIZONTAL, 10, 100, 50);
+		this.speedSlider = new JSlider(JSlider.HORIZONTAL, 10, 1000, 50);
 		speedSlider.setMajorTickSpacing(10);
 		speedSlider.setBorder(BorderFactory.createLineBorder(Color.black));
 		c.insets = new Insets(0, 7, 5, 5);
@@ -120,8 +120,8 @@ public class View extends JPanel
 
 		// Create the label table
 		Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
-		labelTable.put(15, new JLabel("Slow"));
-		labelTable.put(95, new JLabel("Fast"));
+		labelTable.put(10, new JLabel("Fast"));
+		labelTable.put(1995, new JLabel("Slow"));
 		speedSlider.setLabelTable(labelTable);
 		speedSlider.setPaintLabels(true);
 		speedSlider.addChangeListener(this);
@@ -157,6 +157,7 @@ public class View extends JPanel
 
 		// Add the view as a clock observer
 		sap.Clock.getClock().addObserver(this);
+
 	}
 
 	// Implement log observer method
@@ -222,5 +223,15 @@ public class View extends JPanel
 
 	public boolean getIsAutoRunning() {
 		return this.isAutoRunning;
+	}
+
+	public void setIsAutoRunning() {
+		this.isAutoRunning = true;
+	}
+
+	public void autoPlay(){
+		this.playButton.doClick();
+
+
 	}
 }
