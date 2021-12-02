@@ -677,6 +677,7 @@ public class SAPModel implements ClockObserver {
 					outputStream.flush();
 				}catch (Exception e){
 					System.out.println("Not connected");
+					System.exit(0);
 				}
 			}else{
 				sendingSocket.close();
